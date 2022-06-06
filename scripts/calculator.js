@@ -65,8 +65,8 @@ function handleOperator(e) {
     }
     if (!/[\+\-\*\/]/.test(calcString.textContent) || 
         (calcString.textContent.slice(0,1) == '-' 
-            && calcString.textContent.split(/[\+\-\*\/]/).length < 3)) {
-        calcString.textContent += getEventTarget(e).getAttribute('value');
+        && calcString.textContent.split(/[\+\-\*\/]/).length < 3)) {
+            calcString.textContent += getEventTarget(e).getAttribute('value');
     } 
     for (let button of document.getElementsByClassName('operator')) {
         button.classList.add('inactive');
