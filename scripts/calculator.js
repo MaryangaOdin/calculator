@@ -52,7 +52,7 @@ function handleDecimal() {
     }
     if (calcString.textContent.length < 29 && 
         (!calcString.textContent.includes('.') 
-        || (numbers.length > 1 && calcString.textContent.length < 29 && !numbers[1].includes('.')))) {
+        || (numbers.length > 1 && calcString.textContent.length < 29 && !numbers[numbers.length-1].includes('.')))) {
         calcString.textContent += '.';
     } 
     document.getElementById('decimal').classList.add('inactive');
@@ -63,7 +63,9 @@ function handleOperator(e) {
         calcString.textContent = result.textContent;
         result.textContent = '';
     }
-    if (!/[\+\-\*\/]/.test(calcString.textContent)) {
+    if (!/[\+\-\*\/]/.test(calcString.textContent) || 
+        (calcString.textContent.slice(0,1) == '-' 
+            && calcString.textContent.split(/[\+\-\*\/]/).length < 3)) {
         calcString.textContent += getEventTarget(e).getAttribute('value');
     } 
     for (let button of document.getElementsByClassName('operator')) {
@@ -75,8 +77,12 @@ function handleOperator(e) {
 
 function handleEquals(e) {
     let numbers = calcString.textContent.split(/[\+\-\*\/]/);
-    let operator = calcString.textContent.match(/[\+\-\*\/]/);
-    result.textContent = operate(parseFloat(numbers[0]), operator, parseFloat(numbers[1]));
+    if (numbers.length > 1) {
+        let operator = calcString.textContent.replace(/^(\-?[0-9\.]+)([\+\-\*\/])(\-?[0-9\.]+)$/, '$2');
+        let firstNum = numbers.length > 2 ? parseFloat('-'+numbers[1]) : parseFloat(numbers[0]);
+        result.textContent = operate(firstNum, operator, parseFloat(numbers[numbers.length -1]));
+    }  
+    
     for (let button of document.getElementsByClassName('button')) {
         if (button.classList.contains('inactive')) {
             button.classList.remove('inactive');
